@@ -1,0 +1,12 @@
+{
+  "name": "notify-me",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "start:jukebox": "kifli index.js --broker ${BROKER} --topic /jukebox/songinfo"
+  },
+  "dependencies": {
+    "kifli": "^1.0.0",
+    "node-notifier": "^5.1.2"
+  }
+}
