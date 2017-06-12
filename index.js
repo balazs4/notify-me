@@ -17,7 +17,7 @@ const download = url => {
     return undefined;
   }
   return new Promise(resolve => {
-    const file = path.join(os.tmpdir(), 'notify-me.png');
+    const file = path.join(os.tmpdir(), `notify-me-${Date.now()}.png`);
     request
       .get(url)
       .pipe(fs.createWriteStream(file))
