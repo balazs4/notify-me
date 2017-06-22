@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "start:jukebox": "kifli index.js --broker ${BROKER} --topic /jukebox/songinfo"
+    "start:jukebox": "kifli index.js --broker ${BROKER} --topic /jukebox/notification"
   },
   "dependencies": {
     "kifli": "^1.0.0",
