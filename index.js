@@ -12,7 +12,9 @@ const notify = options =>
     });
   });
 
-const download = url => {
+const download = (
+  url = 'http://icons.iconarchive.com/icons/elegantthemes/beautiful-flat/128/radio-icon.png'
+) => {
   if (!url) {
     return undefined;
   }
