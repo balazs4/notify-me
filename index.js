@@ -1,8 +1,8 @@
 const os = require('os');
 const path = require('path');
-const fs = require('fs');
 const request = require('request');
 const notifier = require('node-notifier');
+const fs = require('fs');
 
 const notify = options =>
   new Promise((resolve, reject) => {
@@ -19,7 +19,12 @@ const download = (
     return undefined;
   }
   return new Promise(resolve => {
-    const file = path.join(os.tmpdir(), `notify-me-${Date.now() % 1000}.png`);
+    const base64 = new Buffer(url).toString('base64');
+    const file = path.join(os.tmpdir(), `${base64}.png`);
+    if (fs.existsSync(file)) {
+      resolve(file);
+      return;
+    }
     request
       .get(url)
       .pipe(fs.createWriteStream(file))
@@ -32,16 +37,35 @@ const download = (
   });
 };
 
+const marker = path.join(os.tmpdir(), 'notifyme.json');
+
 module.exports = ({ publish }) => async ({ payload, topic }) => {
   try {
     const { title, body, iconUrl } = payload;
 
     const icon = await download(iconUrl);
 
-    await notify({
+    const notification = {
       title,
       message: body || new Date().toLocaleString(),
       icon
+    };
+    const previous = await new Promise(resolve => {
+      fs.readFile(marker, (err, data) => {
+        if (err) resolve('');
+        else resolve(data.toString());
+      });
+    });
+
+    if (JSON.stringify(notification) === previous) {
+      return;
+    }
+
+    await notify(notification);
+    await new Promise(resolve => {
+      fs.writeFile(marker, JSON.stringify(notification), err => {
+        resolve();
+      });
     });
   } catch (err) {
     console.error(err.message);
